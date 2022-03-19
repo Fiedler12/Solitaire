@@ -1,7 +1,10 @@
 class Column():
     def __init__(self):
-        self.firstCard = None
+        self.cards = []
 
 
-    def getCard(self):
-        return self.firstCard
+    def getCard(self, i):
+        return self.cards[i]
+
+    def getCards(self):
+        return self.cards
