@@ -1,3 +1,6 @@
+from Table import Table
+
 class GameLogic:
-    def __init__(self, table):
-        self.table = table
+
+    def getSuggestion(self, table):
+        print("Not implemented")

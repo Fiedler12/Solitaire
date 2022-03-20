@@ -2,12 +2,14 @@ from Card import Card
 from CardDeck import CardDeck
 from Column import Column
 from DonePile import DonePile
+from LogicPack.GameLogic import GameLogic
 from Table import Table
 
 cardDeck = CardDeck()
 table = Table()
 cardDeck.mix()
 donePiles = []
+gameLogic = GameLogic()
 
 
 def deal():
@@ -27,7 +29,7 @@ def printTable():
         print("Column ", idx + 1)
         for x in var.cards:
             if (x.isShown == True):
-                print(x.getValue(), x.getFaction(), end=" ")
+                print("[", x.getValue(), x.getFaction(), "]", end=" ")
             else:
                 print("[]", end=" ")
         print("\n")
