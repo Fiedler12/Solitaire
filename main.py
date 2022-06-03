@@ -8,8 +8,6 @@ from Table import Table
 cardDeck = CardDeck()
 table = Table()
 cardDeck.mix()
-donePiles = []
-gameLogic = GameLogic()
 
 
 def deal():
@@ -19,10 +17,6 @@ def deal():
     for y in table.columns:
         lastIdx = len(y.cards) - 1
         y.cards[lastIdx].turn()
-    factions = ["H", "D", "S", "C"]
-    for x in range(4):
-        newPile = DonePile(factions[x])
-        donePiles.append(newPile)
 
 def printTable():
     for idx, var in enumerate(table.columns):
@@ -33,8 +27,13 @@ def printTable():
             else:
                 print("[]", end=" ")
         print("\n")
-    for x in donePiles:
+    for x in table.donePiles:
         print("Donepile: ", x.getFaction())
 
+
+gameLogic = GameLogic(table)
 deal()
 printTable()
+gameLogic.getSuggestion()
+
+

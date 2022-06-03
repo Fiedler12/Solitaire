@@ -8,3 +8,6 @@ class Column():
 
     def getCards(self):
         return self.cards
+
+    def getLastCard(self):
+        return self.cards[-1]
