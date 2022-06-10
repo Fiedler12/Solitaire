@@ -35,6 +35,7 @@ class GameLogic:
 
         if (not self.sugFound):
             print("No move found. Pull card.")
+            suggestion = Suggestion(4, None, None)
 
         self.sugFound = False
         self.draw = None

@@ -89,8 +89,9 @@ def makeMove(suggestion):
         print("draw move")
         card = cardDeck.pullTopCard()
         suggestion.toColumn.cards.append(card)
-    if suggestion is None:
-        cardDeck.pullNewCard()
+    if suggestion.sugCode == 4:
+        print("Implement card pull")
+
 
 
 
