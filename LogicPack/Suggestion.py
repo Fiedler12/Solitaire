@@ -1,4 +1,5 @@
 class Suggestion:
-    def __init__(self, card, dest):
-        self.card = card
-        self.dest = dest
+    def __init__(self, sugCode, fromCard, toColumn):
+        self.sugCode = sugCode
+        self.fromCard = fromCard
+        self.toColumn = toColumn

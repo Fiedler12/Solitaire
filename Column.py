@@ -11,3 +11,8 @@ class Column():
 
     def getLastCard(self):
         return self.cards[-1]
+
+    def getFirstShown(self):
+        for card in self.cards:
+            if card.isShown:
+                return card
