@@ -8,7 +8,7 @@ from Table import Table
 cardDeck = CardDeck()
 table = Table()
 cardDeck.dealTestDeck()
-draw = None
+draw = []
 
 
 def deal():
@@ -60,7 +60,7 @@ def printTable():
         else:
             print("Donepile: ", x.cards[-1].value, x.getFaction())
 
-    print("Draw: ", draw.value, draw.faction)
+    print("Draw: ", draw[-1].value, draw[-1].faction)
 
 
 def makeMove(suggestion):
@@ -87,22 +87,30 @@ def makeMove(suggestion):
                     del column.cards[-1]
     if suggestion.sugCode == 3:
         print("draw move")
-        card = cardDeck.pullTopCard()
+        card = draw.pop(-1)
         suggestion.toColumn.cards.append(card)
     if suggestion.sugCode == 4:
+        drawCards()
         print("Implement card pull")
+    if suggestion.sugCode == 5:
+        card = draw.pop(-1)
+        suggestion.toColumn.cards.append(card)
 
 
-
+def drawCards():
+    for x in range(3):
+        card = cardDeck.deck.pop(0)
+        draw.append(card)
 
 
 gameLogic = GameLogic()
 deal()
-draw = cardDeck.getTopCard()
+drawCards()
 
 while True:
+    print(type(table.donePiles[0]))
     printTable()
-    suggestion = gameLogic.getSuggestion(table, draw)
+    suggestion = gameLogic.getSuggestion(table, draw[-1])
     if suggestion != None:
         makeMove(suggestion)
 

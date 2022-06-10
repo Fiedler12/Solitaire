@@ -95,10 +95,24 @@ class GameLogic:
         return None
 
     def checkDraw(self):
+        if self.draw.value == 12:
+            for column in self.table.columns:
+                if len(column.cards) == 0:
+                    self.sugFound = True
+                    print("Move found")
+                    print("move: ", self.draw.value, self.draw.faction, "to empty column.")
+                    return Suggestion(3, self.draw, column)
+        for donePile in self.table.donePiles:
+            if donePile.faction == self.draw.faction:
+                if len(donePile.cards) == self.draw.value:
+                    self.sugFound = True
+                    print("Move found")
+                    print("Move draw to done pile")
+                    return Suggestion(5, self.draw, donePile)
         for column in self.table.columns:
             if len(column.cards) != 0:
                 checkCard = column.cards[-1]
-                if self.draw.value + 1 == checkCard.value and self.draw.isRed != checkCard.isRed:
+                if (self.draw.value + 1 == checkCard.value) and (self.draw.isRed != checkCard.isRed):
                     self.sugFound = True
                     print("Move found")
                     print("move: ", self.draw.value, self.draw.faction, "to: ", checkCard.value, checkCard.faction)
