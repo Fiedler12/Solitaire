@@ -60,7 +60,8 @@ def printTable():
         else:
             print("Donepile: ", x.cards[-1].value, x.getFaction())
 
-    print("Draw: ", draw[-1].value, draw[-1].faction)
+    if len(draw) != 0:
+        print("Draw: ", draw[-1].value, draw[-1].faction)
 
 
 def makeMove(suggestion):
@@ -98,9 +99,27 @@ def makeMove(suggestion):
 
 
 def drawCards():
+    if len(cardDeck.deck) >= 3:
+        for x in range(3):
+            card = cardDeck.deck.pop(0)
+            draw.append(card)
+    else:
+        emptyDraw()
+
+
+def emptyDraw():
+    for x in range(len(cardDeck.deck)):
+        card = cardDeck.deck.pop(0)
+        draw.append(card)
+    for x in range(len(draw)):
+        card = draw.pop(0)
+        cardDeck.deck.append(card)
     for x in range(3):
         card = cardDeck.deck.pop(0)
         draw.append(card)
+
+
+
 
 
 gameLogic = GameLogic()
@@ -110,9 +129,11 @@ drawCards()
 while True:
     print(type(table.donePiles[0]))
     printTable()
+    if len(draw) == 0:
+        drawCards()
     suggestion = gameLogic.getSuggestion(table, draw[-1])
     if suggestion != None:
         makeMove(suggestion)
-
     input("Press for next move")
+
 
