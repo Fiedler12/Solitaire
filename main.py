@@ -7,7 +7,8 @@ from Table import Table
 
 cardDeck = CardDeck()
 table = Table()
-cardDeck.dealTestDeck()
+cardDeck.getNormalDeck()
+cardDeck.mix()
 draw = []
 
 

@@ -14,9 +14,6 @@ class GameLogic:
         suggestion = None
 
         if (not self.sugFound):
-            suggestion = self.checkForFoundation()
-
-        if (not self.sugFound):
             suggestion = self.checkForEmptyColumn()
 
         if (not self.sugFound):
@@ -27,6 +24,9 @@ class GameLogic:
 
         if (not self.sugFound):
             suggestion = self.checkDraw()
+
+        if (not self.sugFound):
+            suggestion = self.checkForFoundation()
 
         if (not self.sugFound):
             print("No move found. Pull card.")
