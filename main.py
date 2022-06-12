@@ -132,7 +132,9 @@ while True:
     printTable()
     if len(draw) == 0:
         drawCards()
+
     suggestion = gameLogic.getSuggestion(table, draw[-1])
+
     if suggestion != None:
         makeMove(suggestion)
     input("Press for next move")
