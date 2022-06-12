@@ -10,7 +10,7 @@ class CardDeck:
 
 
     def mix(self):
-        random.seed(44)
+        random.seed(38)
         for x in range(300):
             rand1 = randint(0, 51)
             tempCard = self.deck[rand1]
