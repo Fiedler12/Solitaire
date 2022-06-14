@@ -9,6 +9,7 @@ cardDeck = CardDeck()
 table = Table()
 cardDeck.getNormalDeck()
 cardDeck.mix()
+cardDeck.printDeck()
 draw = []
 
 
@@ -109,23 +110,24 @@ def drawCards():
 
 
 def emptyDraw():
-    for x in range(len(cardDeck.deck)):
-        card = cardDeck.deck.pop(0)
-        draw.append(card)
-    for x in range(len(draw)):
-        card = draw.pop(0)
-        cardDeck.deck.append(card)
-    for x in range(3):
-        card = cardDeck.deck.pop(0)
-        draw.append(card)
-
-
+    if len(cardDeck.deck) > 0:
+        for x in range(len(draw) - 1):
+            if (cardDeck.deck != 0):
+                card = draw.pop(0)
+                cardDeck.deck.append(card)
+    else:
+        for x in range(len(draw)):
+            card = draw.pop(0)
+            cardDeck.deck.append(card)
+    drawCards()
 
 
 
 gameLogic = GameLogic()
 deal()
 drawCards()
+
+
 
 while True:
     print(type(table.donePiles[0]))
@@ -138,5 +140,4 @@ while True:
     if suggestion != None:
         makeMove(suggestion)
     input("Press for next move")
-
 

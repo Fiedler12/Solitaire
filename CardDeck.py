@@ -10,7 +10,7 @@ class CardDeck:
 
 
     def mix(self):
-        random.seed(38)
+        random.seed(49)
         for x in range(300):
             rand1 = randint(0, 51)
             tempCard = self.deck[rand1]
@@ -43,6 +43,7 @@ class CardDeck:
         self.appendCard(1, "H")
         self.appendCard(6, "C")
         self.appendCard(3, "C")
+        """
         self.appendCard(11, "C")
         self.appendCard(12, "H")
         self.appendCard(10, "S")
@@ -81,8 +82,14 @@ class CardDeck:
         self.appendCard(3, "S")
         self.appendCard(4, "H")
         self.appendCard(4, "S")
+        """
 
 
     def appendCard(self, value, faction):
         newCard = Card(value, faction)
         self.deck.append(newCard)
+
+
+    def printDeck(self):
+        for card in self.deck:
+            print(card.value + 1, card.faction)
