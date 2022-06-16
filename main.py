@@ -4,6 +4,7 @@ from Column import Column
 from DonePile import DonePile
 from LogicPack.GameLogic import GameLogic
 from Table import Table
+import cv2
 
 cardDeck = CardDeck()
 table = Table()
@@ -140,4 +141,3 @@ while True:
     if suggestion != None:
         makeMove(suggestion)
     input("Press for next move")
-
