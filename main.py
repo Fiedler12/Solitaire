@@ -1,11 +1,64 @@
 from Card import Card
-from CardDeck import CardDeck
 from Column import Column
 from DonePile import DonePile
 from LogicPack.GameLogic import GameLogic
 from Table import Table
+import os
 import cv2
+import numpy as np
+import tensorflow as tf
+import sys
+from matplotlib import pyplot as plt
 
+from TensorFlow1.models.research.object_detection.utils import label_map_util
+## Might not need this one below. But we have it.
+from TensorFlow1.models.research.object_detection.utils import visualization_utils as vis_util
+
+MODEL_NAME = 'inference_graph'
+IMAGE_NAME = 'test1.jpg'
+
+CWD_PATH = os.getcwd()
+
+## Path to our model.
+PATH_TO_CKPT = os.path.join(CWD_PATH,'venv','TensorFlow1','models','research','object_detection',MODEL_NAME,'frozen_inference_graph.pb')
+
+## Path to our labels
+PATH_TO_LABELS = os.path.join(CWD_PATH,'venv','TensorFlow1','models','research','object_detection', 'training','labelmap.pbtxt')
+
+## Number of different classes we expect.
+NUM_CLASSES = 52
+
+## Path to the names of our classes being loaded in here.
+## We match this to categories so they have an index.
+label_map = label_map_util.load_labelmap(PATH_TO_LABELS)
+categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=NUM_CLASSES, use_display_name=True)
+category_index = label_map_util.create_category_index(categories)
+
+
+detection_graph = tf.Graph()
+with detection_graph.as_default():
+    od_graph_def = tf.compat.v1.GraphDef()
+    with tf.io.gfile.GFile(PATH_TO_CKPT, 'rb') as fid:
+        serialized_graph = fid.read()
+        od_graph_def.ParseFromString(serialized_graph)
+        tf.import_graph_def(od_graph_def, name='')
+
+    sess = tf.compat.v1.Session(graph=detection_graph)
+
+
+image_tensor = detection_graph.get_tensor_by_name('image_tensor:0')
+
+# Output tensors are the detection boxes, scores, and classes
+# Each box represents a part of the image where a particular object was detected
+detection_boxes = detection_graph.get_tensor_by_name('detection_boxes:0')
+
+# Each score represents level of confidence for each of the objects.
+# The score is shown on the result image, together with the class label.
+detection_scores = detection_graph.get_tensor_by_name('detection_scores:0')
+detection_classes = detection_graph.get_tensor_by_name('detection_classes:0')
+
+# Number of objects detected
+num_detections = detection_graph.get_tensor_by_name('num_detections:0')
 
 ## Data we need:
 """
