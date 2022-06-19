@@ -6,9 +6,22 @@ from LogicPack.GameLogic import GameLogic
 from Table import Table
 import cv2
 
+
+## Data we need:
+"""
+* Pixel indices for each column in our webcam so we can easily read it. 
+* ie. from x-y column 1
+* If there is no card found in that column we assume it empty
+"""
+
+
 table = Table()
 draw = None
+drawCount = 24
 state = -1
+gameLogic = GameLogic()
+frame = None
+
 
 """
 cardDeck = CardDeck()
@@ -176,6 +189,85 @@ def deal():
         table.columns[x].cards.append(card)
 
 
-def printTable():
+## Here we read the last card in a column with a specific index. Might have to take the dataset in this method.
+def readColumn(index):
+    ## We will take index of the column and maybe the data we found. Dunno yet.
+    print("not implemented")
+
+def readDraw():
+    ## What we will call to find the drawn card.
+    print("not implemented")
+
+def getFrame():
+    ## Use opencv to get a relevant frame from our webcam.
+    ## Maybe we should display it first
+    print("not implemented")
+    ## We will return the frame here.
+    ## Or it might just be fine to make it a global variable.
+
+def makeMove(suggestion):
+    if suggestion.sugCode == 1:
+        print("Intercolumn move")
+        for column in table.columns:
+            idx = 0
+            for card in column.cards:
+                if card == suggestion.fromCard:
+                    moveColumn = column.cards[idx:]
+                    for x in moveColumn:
+                        suggestion.toColumn.cards.append(x)
+                    del column.cards[idx:]
+                    return
+                else:
+                    idx = idx + 1
+    if suggestion.sugCode == 2:
+        print("Donepile move")
+        for column in table.columns:
+            if len(column.cards) != 0:
+                lastCard = column.getLastCard()
+                if lastCard == suggestion.fromCard:
+                    suggestion.toColumn.cards.append(suggestion.fromCard)
+                    del column.cards[-1]
+    if suggestion.sugCode == 3:
+        print("draw move")
+        card = draw
+        suggestion.toColumn.cards.append(card)
+        ## Decrement drawCount
+    if suggestion.sugCode == 4:
+        print("Pull new card")
+    if suggestion.sugCode == 5:
+        card = draw.pop(-1)
+        suggestion.toColumn.cards.append(card)
+
+## We will loop through our table analyzing which cards needs to be defined.
+## We do this by looping through the last card in each column. If it is undefined, we call readColumn() whith the matching index.
+def findMissingCard():
+    idx = 0
     for column in table.columns:
+        card = column.cards[-1]
+        if card.isShown == False:
+            readColumn(idx)
+            break
+        idx = idx + 1
+
+
+while True:
+    input("wait for input")
+    ## Set up everything for snapshot
+    ## We make sure that everything is showing when we ask for a snaphot
+    ## We will start by being in state -1 Where we will scan
+    if state == -1:
+        idx = 0
+        for column in table.columns:
+            readColumn(idx)
+            idx + 1
+        readDraw()
+        state == 0
+        gameLogic.getSuggestion(table, draw)
+    ## Call
+    elif state == 0:
+        ## This is a regular round.
+        print("Not implemented")
+
+
+
 
