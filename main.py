@@ -8,6 +8,7 @@ import cv2
 
 table = Table()
 draw = None
+state = -1
 
 """
 cardDeck = CardDeck()
@@ -173,3 +174,8 @@ def deal():
     for x in range(6,7):
         card = card(False, None, None)
         table.columns[x].cards.append(card)
+
+
+def printTable():
+    for column in table.columns:
+
