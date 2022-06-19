@@ -6,12 +6,14 @@ from LogicPack.GameLogic import GameLogic
 from Table import Table
 import cv2
 
-cardDeck = CardDeck()
 table = Table()
+draw = None
+
+"""
+cardDeck = CardDeck()
 cardDeck.getNormalDeck()
 cardDeck.mix()
 cardDeck.printDeck()
-draw = []
 
 
 def deal():
@@ -141,3 +143,33 @@ while True:
     if suggestion != None:
         makeMove(suggestion)
     input("Press for next move")
+"""
+
+def deal():
+    for column in table.columns:
+        card = card(False, None, None)
+        column.cards.append(card)
+
+    for x in range(1,7):
+        card = card(False, None, None)
+        table.columns[x].cards.append(card)
+
+    for x in range(2,7):
+        card = card(False, None, None)
+        table.columns[x].cards.append(card)
+
+    for x in range(3,7):
+        card = card(False, None, None)
+        table.columns[x].cards.append(card)
+
+    for x in range(4,7):
+        card = card(False, None, None)
+        table.columns[x].cards.append(card)
+
+    for x in range(5,7):
+        card = card(False, None, None)
+        table.columns[x].cards.append(card)
+
+    for x in range(6,7):
+        card = card(False, None, None)
+        table.columns[x].cards.append(card)
