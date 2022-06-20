@@ -1,6 +1,3 @@
-from Card import Card
-from Column import Column
-from DonePile import DonePile
 from LogicPack.GameLogic import GameLogic
 from Table import Table
 import os
@@ -24,6 +21,9 @@ PATH_TO_CKPT = os.path.join(CWD_PATH,'venv','TensorFlow1','models','research','o
 
 ## Path to our labels
 PATH_TO_LABELS = os.path.join(CWD_PATH,'venv','TensorFlow1','models','research','object_detection', 'training','labelmap.pbtxt')
+
+PATH_TO_IMAGE = os.path.join(CWD_PATH,IMAGE_NAME)
+
 
 ## Number of different classes we expect.
 NUM_CLASSES = 52
@@ -67,6 +67,56 @@ num_detections = detection_graph.get_tensor_by_name('num_detections:0')
 * If there is no card found in that column we assume it empty
 """
 
+img_height = 1080
+img_width = 1920
+
+
+image = cv2.imread(PATH_TO_IMAGE)
+image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+image_expanded = np.expand_dims(image_rgb, axis=0)
+
+# Perform the actual detection by running the model with the image as input
+(boxes, scores, classes, num) = sess.run(
+    [detection_boxes, detection_scores, detection_classes, num_detections],
+    feed_dict={image_tensor: image_expanded})
+
+print(np.squeeze(boxes[0][0]))
+
+def sliceCard(scores):
+    idx = 0
+    for x in scores:
+        if x < 0.70:
+            realCards = scores[:idx]
+            break
+        idx = idx + 1
+    return realCards
+
+newScore = sliceCard(np.squeeze(scores))
+
+print(newScore)
+
+
+
+vis_util.visualize_boxes_and_labels_on_image_array(
+    image,
+    np.squeeze(boxes),
+    np.squeeze(classes).astype(np.int32),
+    np.squeeze(scores),
+    category_index,
+    use_normalized_coordinates=True,
+    line_thickness=8,
+    min_score_thresh=0.60)
+
+# All the results have been drawn on image. Now display the image.
+
+cv2.imshow('Object detector', image)
+
+# Press any key to close the image
+cv2.waitKey(0)
+
+# Clean up
+cv2.destroyAllWindows()
+
 
 table = Table()
 draw = None
@@ -74,6 +124,8 @@ drawCount = 24
 state = -1
 gameLogic = GameLogic()
 frame = None
+
+
 
 
 """
@@ -256,7 +308,7 @@ def getFrame():
     ## Maybe we should display it first
     print("not implemented")
     ## We will return the frame here.
-    ## Or it might just be fine to make it a global variable.
+    ## Or it might just be fine to make it a global variable we define. We'll see.
 
 def makeMove(suggestion):
     if suggestion.sugCode == 1:
@@ -565,9 +617,7 @@ def revealCard(card, id):
         card.value = 13
         card.getColor()
 
-
-
-
+"""
 input("Set up your cards")
 while True:
     input("wait for input")
@@ -586,6 +636,6 @@ while True:
     elif state == 0:
         ## This is a regular round.
         print("Not implemented")
-
+"""
 
 
