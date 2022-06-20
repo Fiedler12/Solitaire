@@ -15,3 +15,7 @@ class Card:
     def getColor(self):
         if self.faction == 'H' or self.faction == 'D':
             self.isRed = True
+        else:
+            self.isRed = False
+
+
