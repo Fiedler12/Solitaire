@@ -303,6 +303,7 @@ def findMissingCard():
         idx = idx + 1
 
 
+input("Set up your cards")
 while True:
     input("wait for input")
     ## Set up everything for snapshot

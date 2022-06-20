@@ -40,7 +40,7 @@ class GameLogic:
     def checkForKingColumnMove(self):
         for column in self.table.columns:
             if len(column.cards) != 0:
-                if column.cards[0].value == 12 and column.cards[0].isShown:
+                if column.cards[0].value == 13 and column.cards[0].isShown:
                     cardDest = column.cards[-1]
                     for checkColumn in self.table.columns:
                         if len(checkColumn.cards) != 0:
@@ -88,7 +88,7 @@ class GameLogic:
         return None
 
     def checkDraw(self):
-        if self.draw.value == 12:
+        if self.draw.value == 13:
             for column in self.table.columns:
                 if len(column.cards) == 0:
                     self.sugFound = True
@@ -103,7 +103,7 @@ class GameLogic:
                     print("Move draw to done pile")
                     return Suggestion(5, self.draw, donePile)
         for column in self.table.columns:
-            if self.draw.value !=1:
+            if self.draw.value !=2:
                 if len(column.cards) != 0:
                     checkCard = column.cards[-1]
                     if (self.draw.value + 1 == checkCard.value) and (self.draw.isRed != checkCard.isRed):
@@ -119,9 +119,9 @@ class GameLogic:
                 for otherColumn in self.table.columns:
                     if otherColumn != column:
                             if len(otherColumn.cards) > 0:
-                                if otherColumn.cards[0].value != 12:
+                                if otherColumn.cards[0].value != 13:
                                     card = otherColumn.getFirstShown()
-                                    if (card.value == 12) and card.isShown:
+                                    if (card.value == 13) and card.isShown:
                                         self.sugFound = True
                                         print("Move found")
                                         print("Move: ", card.value, card.faction, " to empty column.")
