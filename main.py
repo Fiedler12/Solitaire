@@ -303,27 +303,6 @@ def findMissingCard():
         idx = idx + 1
 
 
-input("Set up your cards")
-while True:
-    input("wait for input")
-    ## Set up everything for snapshot
-    ## We make sure that everything is showing when we ask for a snaphot
-    ## We will start by being in state -1 Where we will scan
-    if state == -1:
-        idx = 0
-        for column in table.columns:
-            readColumn(idx)
-            idx + 1
-        readDraw()
-        state == 0
-        gameLogic.getSuggestion(table, draw)
-    ## Call
-    elif state == 0:
-        ## This is a regular round.
-        print("Not implemented")
-
-
-
 def revealCard(card, id):
     if id == 1:
         card.isShown = True
@@ -585,4 +564,28 @@ def revealCard(card, id):
         card.faction = "S"
         card.value = 13
         card.getColor()
+
+
+
+
+input("Set up your cards")
+while True:
+    input("wait for input")
+    ## Set up everything for snapshot
+    ## We make sure that everything is showing when we ask for a snaphot
+    ## We will start by being in state -1 Where we will scan
+    if state == -1:
+        idx = 0
+        for column in table.columns:
+            readColumn(idx)
+            idx + 1
+        readDraw()
+        state == 0
+        gameLogic.getSuggestion(table, draw)
+    ## Call
+    elif state == 0:
+        ## This is a regular round.
+        print("Not implemented")
+
+
 
