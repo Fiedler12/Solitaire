@@ -17,13 +17,14 @@ IMAGE_NAME = 'test1.jpg'
 CWD_PATH = os.getcwd()
 
 ## Path to our model.
-PATH_TO_CKPT = os.path.join(CWD_PATH,'venv','TensorFlow1','models','research','object_detection',MODEL_NAME,'frozen_inference_graph.pb')
+PATH_TO_CKPT = os.path.join(CWD_PATH, 'venv', 'TensorFlow1', 'models', 'research', 'object_detection', MODEL_NAME,
+                            'frozen_inference_graph.pb')
 
 ## Path to our labels
-PATH_TO_LABELS = os.path.join(CWD_PATH,'venv','TensorFlow1','models','research','object_detection', 'training','labelmap.pbtxt')
+PATH_TO_LABELS = os.path.join(CWD_PATH, 'venv', 'TensorFlow1', 'models', 'research', 'object_detection', 'training',
+                              'labelmap.pbtxt')
 
-PATH_TO_IMAGE = os.path.join(CWD_PATH,IMAGE_NAME)
-
+PATH_TO_IMAGE = os.path.join(CWD_PATH, IMAGE_NAME)
 
 ## Number of different classes we expect.
 NUM_CLASSES = 52
@@ -31,9 +32,9 @@ NUM_CLASSES = 52
 ## Path to the names of our classes being loaded in here.
 ## We match this to categories so they have an index.
 label_map = label_map_util.load_labelmap(PATH_TO_LABELS)
-categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=NUM_CLASSES, use_display_name=True)
+categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=NUM_CLASSES,
+                                                            use_display_name=True)
 category_index = label_map_util.create_category_index(categories)
-
 
 detection_graph = tf.Graph()
 with detection_graph.as_default():
@@ -44,7 +45,6 @@ with detection_graph.as_default():
         tf.import_graph_def(od_graph_def, name='')
 
     sess = tf.compat.v1.Session(graph=detection_graph)
-
 
 image_tensor = detection_graph.get_tensor_by_name('image_tensor:0')
 
@@ -70,53 +70,11 @@ num_detections = detection_graph.get_tensor_by_name('num_detections:0')
 img_height = 1080
 img_width = 1920
 
-
 image = cv2.imread(PATH_TO_IMAGE)
 image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 image_expanded = np.expand_dims(image_rgb, axis=0)
 
 # Perform the actual detection by running the model with the image as input
-(boxes, scores, classes, num) = sess.run(
-    [detection_boxes, detection_scores, detection_classes, num_detections],
-    feed_dict={image_tensor: image_expanded})
-
-print(np.squeeze(boxes[0][0]))
-
-def sliceCard(scores):
-    idx = 0
-    for x in scores:
-        if x < 0.70:
-            realCards = scores[:idx]
-            break
-        idx = idx + 1
-    return realCards
-
-newScore = sliceCard(np.squeeze(scores))
-
-print(newScore)
-
-
-
-vis_util.visualize_boxes_and_labels_on_image_array(
-    image,
-    np.squeeze(boxes),
-    np.squeeze(classes).astype(np.int32),
-    np.squeeze(scores),
-    category_index,
-    use_normalized_coordinates=True,
-    line_thickness=8,
-    min_score_thresh=0.60)
-
-# All the results have been drawn on image. Now display the image.
-
-cv2.imshow('Object detector', image)
-
-# Press any key to close the image
-cv2.waitKey(0)
-
-# Clean up
-cv2.destroyAllWindows()
-
 
 table = Table()
 draw = None
@@ -124,9 +82,6 @@ drawCount = 24
 state = -1
 gameLogic = GameLogic()
 frame = None
-
-
-
 
 """
 cardDeck = CardDeck()
@@ -264,32 +219,33 @@ while True:
     input("Press for next move")
 """
 
+
 def deal():
     for column in table.columns:
         card = card(False, None, None)
         column.cards.append(card)
 
-    for x in range(1,7):
+    for x in range(1, 7):
         card = card(False, None, None)
         table.columns[x].cards.append(card)
 
-    for x in range(2,7):
+    for x in range(2, 7):
         card = card(False, None, None)
         table.columns[x].cards.append(card)
 
-    for x in range(3,7):
+    for x in range(3, 7):
         card = card(False, None, None)
         table.columns[x].cards.append(card)
 
-    for x in range(4,7):
+    for x in range(4, 7):
         card = card(False, None, None)
         table.columns[x].cards.append(card)
 
-    for x in range(5,7):
+    for x in range(5, 7):
         card = card(False, None, None)
         table.columns[x].cards.append(card)
 
-    for x in range(6,7):
+    for x in range(6, 7):
         card = card(False, None, None)
         table.columns[x].cards.append(card)
 
@@ -299,9 +255,11 @@ def readColumn(index):
     ## We will take index of the column and maybe the data we found. Dunno yet.
     print("not implemented")
 
+
 def readDraw():
     ## What we will call to find the drawn card.
     print("not implemented")
+
 
 def getFrame():
     ## Use opencv to get a relevant frame from our webcam.
@@ -309,6 +267,7 @@ def getFrame():
     print("not implemented")
     ## We will return the frame here.
     ## Or it might just be fine to make it a global variable we define. We'll see.
+
 
 def makeMove(suggestion):
     if suggestion.sugCode == 1:
@@ -342,6 +301,7 @@ def makeMove(suggestion):
     if suggestion.sugCode == 5:
         card = draw.pop(-1)
         suggestion.toColumn.cards.append(card)
+
 
 ## We will loop through our table analyzing which cards needs to be defined.
 ## We do this by looping through the last card in each column. If it is undefined, we call readColumn() whith the matching index.
@@ -617,6 +577,47 @@ def revealCard(card, id):
         card.value = 13
         card.getColor()
 
+def fetchPicture():
+    vidcap = cv2.VideoCapture(0)
+    if vidcap.isOpened:
+        print("Camera open")
+        ret, frame = vidcap.read()
+        if ret:
+            cv2.imshow("Frame", frame)
+        else:
+                print("Frame error")
+    else:
+        print("Unable to access camera")
+
+
+
+
+def performImageProcessing():
+    image = cv2.imread(PATH_TO_IMAGE)
+    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    image_expanded = np.expand_dims(image_rgb, axis=0)
+
+    (boxes, scores, classes, num) = sess.run(
+        [detection_boxes, detection_scores, detection_classes, num_detections],
+        feed_dict={image_tensor: image_expanded})
+    idx = 0
+
+    realBoxes = np.squeeze(boxes)
+    realScores = np.squeeze(scores)
+    realClasses = np.squeeze(classes).astype(np.int32)
+
+    for x in realScores:
+        if x < 0.70:
+            break
+        idx = idx + 1
+
+    return realBoxes[:idx], realScores[:idx], realClasses[:idx]
+
+
+boxes, scores, classes = performImageProcessing()
+
+print(boxes)
+
 """
 input("Set up your cards")
 while True:
@@ -637,5 +638,3 @@ while True:
         ## This is a regular round.
         print("Not implemented")
 """
-
-
