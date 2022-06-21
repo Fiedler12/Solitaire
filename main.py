@@ -583,12 +583,7 @@ def fetchPicture():
         print("Camera open")
         ret, frame = vidcap.read()
         if ret:
-            while (True):
-                cv2.imshow("Frame", frame)  # show captured frame
-
-                # press 'q' to break out of the loop
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    break
+            return frame
         else:
                 print("Frame error")
     else:
@@ -620,7 +615,8 @@ def performImageProcessing(image):
 boxes, scores, classes = performImageProcessing()
 """
 
-fetchPicture()
+image = fetchPicture()
+
 
 """
 input("Set up your cards")
