@@ -583,17 +583,19 @@ def fetchPicture():
         print("Camera open")
         ret, frame = vidcap.read()
         if ret:
-            cv2.imshow("Frame", frame)
+            while (True):
+                cv2.imshow("Frame", frame)  # show captured frame
+
+                # press 'q' to break out of the loop
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
         else:
                 print("Frame error")
     else:
         print("Unable to access camera")
 
 
-
-
-def performImageProcessing():
-    image = cv2.imread(PATH_TO_IMAGE)
+def performImageProcessing(image):
     image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image_expanded = np.expand_dims(image_rgb, axis=0)
 
@@ -614,9 +616,11 @@ def performImageProcessing():
     return realBoxes[:idx], realScores[:idx], realClasses[:idx]
 
 
+"""
 boxes, scores, classes = performImageProcessing()
+"""
 
-print(boxes)
+fetchPicture()
 
 """
 input("Set up your cards")
