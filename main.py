@@ -319,16 +319,15 @@ def findMissingCard():
 
 def fetchPicture():
     vidcap = cv2.VideoCapture(0)
+
+    vidcap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+    vidcap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+
     if vidcap.isOpened:
         print("Camera open")
         ret, frame = vidcap.read()
         if ret:
-            while (True):
-                cv2.imshow("Frame", frame)  # show captured frame
-
-                # press 'q' to break out of the loop
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    break
+            return frame
         else:
                 print("Frame error")
     else:
@@ -360,7 +359,15 @@ def performImageProcessing(image):
 boxes, scores, classes = performImageProcessing()
 """
 
-fetchPicture()
+
+input("Set up cards")
+while True:
+    image = fetchPicture()
+    boxes, scores, classes = performImageProcessing(image)
+    print(boxes)
+    print(scores)
+    print(classes)
+    input("Wait for next picture")
 
 """
 input("Set up your cards")
