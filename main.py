@@ -1,3 +1,4 @@
+from Card import Card
 from LogicPack.GameLogic import GameLogic
 from Table import Table
 import os
@@ -5,11 +6,22 @@ import cv2
 import numpy as np
 import tensorflow as tf
 import sys
-from matplotlib import pyplot as plt
 
-from TensorFlow1.models.research.object_detection.utils import label_map_util
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+from TensorFlow2.models.research.object_detection.utils import label_map_util
 ## Might not need this one below. But we have it.
-from TensorFlow1.models.research.object_detection.utils import visualization_utils as vis_util
+from TensorFlow2.models.research.object_detection.utils import visualization_utils as vis_util
+
+print("starting fetch")
+vidcap = cv2.VideoCapture(0)
+print("1")
+
+vidcap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+vidcap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+
+print("Camera ready")
 
 MODEL_NAME = 'inference_graph'
 IMAGE_NAME = 'test1.jpg'
@@ -17,11 +29,11 @@ IMAGE_NAME = 'test1.jpg'
 CWD_PATH = os.getcwd()
 
 ## Path to our model.
-PATH_TO_CKPT = os.path.join(CWD_PATH, 'venv', 'TensorFlow1', 'models', 'research', 'object_detection', MODEL_NAME,
+PATH_TO_CKPT = os.path.join(CWD_PATH,  'TensorFlow2', 'models', 'research', 'object_detection', MODEL_NAME,
                             'frozen_inference_graph.pb')
 
 ## Path to our labels
-PATH_TO_LABELS = os.path.join(CWD_PATH, 'venv', 'TensorFlow1', 'models', 'research', 'object_detection', 'training',
+PATH_TO_LABELS = os.path.join(CWD_PATH,  'TensorFlow2', 'models', 'research', 'object_detection', 'training',
                               'labelmap.pbtxt')
 
 PATH_TO_IMAGE = os.path.join(CWD_PATH, IMAGE_NAME)
@@ -66,6 +78,31 @@ num_detections = detection_graph.get_tensor_by_name('num_detections:0')
 * ie. from x-y column 1
 * If there is no card found in that column we assume it empty
 """
+columnIdx = []
+
+column1 = [0.03125, 0.1406]
+columnIdx.append(column1)
+
+column2 = [0.1406, 0.2656]
+columnIdx.append(column2)
+
+column3 = [0.2656, 0.3828]
+columnIdx.append(column3)
+
+column4 = [0.3828, 0.50]
+columnIdx.append(column4)
+
+column5 = [0.50, 0.6171]
+columnIdx.append(column5)
+
+column6 = [0.6171, 0.7444]
+columnIdx.append(column6)
+
+column7 = [0.7444, 0.8516]
+columnIdx.append(column7)
+
+column8 = [0.8516, 0.9688]
+columnIdx.append(column8)
 
 img_height = 1080
 img_width = 1920
@@ -77,11 +114,11 @@ image_expanded = np.expand_dims(image_rgb, axis=0)
 # Perform the actual detection by running the model with the image as input
 
 table = Table()
-draw = None
+stack = []
+draw = []
 drawCount = 24
 state = -1
 gameLogic = GameLogic()
-frame = None
 
 """
 cardDeck = CardDeck()
@@ -222,51 +259,67 @@ while True:
 
 def deal():
     for column in table.columns:
-        card = card(False, None, None)
+        card = Card(False, None, None)
         column.cards.append(card)
 
     for x in range(1, 7):
-        card = card(False, None, None)
+        card = Card(False, None, None)
         table.columns[x].cards.append(card)
 
     for x in range(2, 7):
-        card = card(False, None, None)
+        card = Card(False, None, None)
         table.columns[x].cards.append(card)
 
     for x in range(3, 7):
-        card = card(False, None, None)
+        card = Card(False, None, None)
         table.columns[x].cards.append(card)
 
     for x in range(4, 7):
-        card = card(False, None, None)
+        card = Card(False, None, None)
         table.columns[x].cards.append(card)
 
     for x in range(5, 7):
-        card = card(False, None, None)
+        card = Card(False, None, None)
         table.columns[x].cards.append(card)
 
     for x in range(6, 7):
-        card = card(False, None, None)
+        card = Card(False, None, None)
         table.columns[x].cards.append(card)
+
+    for x in range(0,24):
+        card = Card(False, None, None)
+        stack.append(card)
+
+    drawCards()
 
 
 ## Here we read the last card in a column with a specific index. Might have to take the dataset in this method.
 def readColumn(index):
     ## We will take index of the column and maybe the data we found. Dunno yet.
-    print("not implemented")
+    print("finding card matching column ", index)
+    idx = 0
+    for x in boxes:
+        if x[1] > columnIdx[index][0] and x[3] < columnIdx[index][1]:
+            print("Card found")
+            table.columns[index-1].cards[-1].revealCard(classes[idx])
+            print("card is now found to be ", table.columns[index - 1].cards[-1].faction, table.columns[index - 1].cards[-1].value)
+            break
+        idx = idx + 1
+
 
 
 def readDraw():
     ## What we will call to find the drawn card.
-    print("not implemented")
+    print("Finding draw")
+    idx = 0
+    for x in boxes:
+        if x[1] > columnIdx[0][0] and x[3] < columnIdx[0][1]:
+            print("draw found")
+            draw[-1].revealCard(classes[idx])
+            draw[-1].getColor()
+            print("Draw is ", draw[-1].faction, draw[-1].value)
 
-
-def getFrame():
-    ## Use opencv to get a relevant frame from our webcam.
-    ## Maybe we should display it first
-    print("not implemented")
-    ## We will return the frame here.
-    ## Or it might just be fine to make it a global variable we define. We'll see.
+        idx = idx + 1
 
 
 def makeMove(suggestion):
@@ -284,7 +337,7 @@ def makeMove(suggestion):
                 else:
                     idx = idx + 1
     if suggestion.sugCode == 2:
-        print("Donepile move")
+        print("Donepile move: ", suggestion.fromCard.value, suggestion.fromCard.faction)
         for column in table.columns:
             if len(column.cards) != 0:
                 lastCard = column.getLastCard()
@@ -293,11 +346,12 @@ def makeMove(suggestion):
                     del column.cards[-1]
     if suggestion.sugCode == 3:
         print("draw move")
-        card = draw
+        card = draw.pop(-1)
         suggestion.toColumn.cards.append(card)
         ## Decrement drawCount
     if suggestion.sugCode == 4:
         print("Pull new card")
+        drawCards()
     if suggestion.sugCode == 5:
         card = draw.pop(-1)
         suggestion.toColumn.cards.append(card)
@@ -306,23 +360,22 @@ def makeMove(suggestion):
 ## We will loop through our table analyzing which cards needs to be defined.
 ## We do this by looping through the last card in each column. If it is undefined, we call readColumn() whith the matching index.
 def findMissingCard():
-    idx = 0
+    idx = 1
+    if draw[-1].isShown == False:
+        readDraw()
+
     for column in table.columns:
-        card = column.cards[-1]
-        if card.isShown == False:
-            readColumn(idx)
-            break
-        idx = idx + 1
+        if len(column.cards) != 0:
+            card = column.cards[-1]
+            if card.isShown == False:
+                readColumn(idx)
+                break
+            idx = idx + 1
 
 
 
 
 def fetchPicture():
-    vidcap = cv2.VideoCapture(0)
-
-    vidcap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-    vidcap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-
     if vidcap.isOpened:
         print("Camera open")
         ret, frame = vidcap.read()
@@ -355,37 +408,73 @@ def performImageProcessing(image):
     return realBoxes[:idx], realScores[:idx], realClasses[:idx]
 
 
-"""
-boxes, scores, classes = performImageProcessing()
-"""
+def printTable():
+    for column in table.columns:
+        if len(column.cards) != 0:
+            for idx, var in enumerate(table.columns):
+                print("Column ", idx + 1)
+                for x in var.cards:
+                    if (x.isShown == True):
+                        print("[", x.getValue(), x.getFaction(), "]", end=" ")
+                    else:
+                        print("[]", end=" ")
+                print("\n")
+    for x in table.donePiles:
+        if len(x.cards) == 0:
+            print("Donepile: ", x.getFaction())
+        else:
+            print("Donepile: ", x.cards[-1].value, x.getFaction())
+
+    if draw != None:
+        print("Draw: ", draw[-1].value, draw[-1].faction)
+
+def drawCards():
+    if len(stack) >= 3:
+        for x in range(3):
+            card = stack.pop(0)
+            draw.append(card)
+    else:
+        emptyDraw()
 
 
-input("Set up cards")
+def emptyDraw():
+    if len(stack) > 0:
+        for x in range(len(draw) - 1):
+            if (stack != 0):
+                card = draw.pop(0)
+                stack.append(card)
+    else:
+        for x in range(len(draw)):
+            card = draw.pop(0)
+            stack.append(card)
+    drawCards()
+
+
+deal()
+
 while True:
+    input("Input to take and scan")
     image = fetchPicture()
     boxes, scores, classes = performImageProcessing(image)
-    print(boxes)
-    print(scores)
-    print(classes)
-    input("Wait for next picture")
-
-"""
-input("Set up your cards")
-while True:
-    input("wait for input")
     ## Set up everything for snapshot
     ## We make sure that everything is showing when we ask for a snaphot
     ## We will start by being in state -1 Where we will scan
     if state == -1:
-        idx = 0
+        idx = 1
         for column in table.columns:
             readColumn(idx)
-            idx + 1
+            idx = idx + 1
         readDraw()
-        state == 0
-        gameLogic.getSuggestion(table, draw)
-    ## Call
+        printTable()
+        state = 0
+        suggestion = gameLogic.getSuggestion(table, draw[-1])
+        makeMove(suggestion)
+
     elif state == 0:
+        findMissingCard()
+        printTable()
+        suggestion = gameLogic.getSuggestion(table, draw[-1])
+        makeMove(suggestion)
         ## This is a regular round.
-        print("Not implemented")
-"""
+
+

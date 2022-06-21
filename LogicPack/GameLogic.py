@@ -62,7 +62,7 @@ class GameLogic:
                     card = column.cards[-1]
                     for donePile in self.table.donePiles:
                         if donePile.faction == card.faction:
-                            if len(donePile.cards) == card.value:
+                            if len(donePile.cards) + 1 == card.value:
                                 self.sugFound = True
                                 return Suggestion(2, card, donePile)
 
@@ -88,7 +88,7 @@ class GameLogic:
         return None
 
     def checkDraw(self):
-        if self.draw is not None:
+        if self.draw.value is not None:
             if self.draw.value == 13:
                 for column in self.table.columns:
                     if len(column.cards) == 0:
@@ -98,13 +98,13 @@ class GameLogic:
                         return Suggestion(3, self.draw, column)
             for donePile in self.table.donePiles:
                 if donePile.faction == self.draw.faction:
-                    if len(donePile.cards) == self.draw.value:
+                    if len(donePile.cards) + 1 == self.draw.value:
                         self.sugFound = True
                         print("Move found")
                         print("Move draw to done pile")
                         return Suggestion(5, self.draw, donePile)
             for column in self.table.columns:
-                if self.draw.value !=2:
+                if self.draw.value !=3:
                     if len(column.cards) != 0:
                         checkCard = column.cards[-1]
                         if (self.draw.value + 1 == checkCard.value) and (self.draw.isRed != checkCard.isRed):
