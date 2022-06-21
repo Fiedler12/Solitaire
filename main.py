@@ -579,6 +579,10 @@ def revealCard(card, id):
 
 def fetchPicture():
     vidcap = cv2.VideoCapture(0)
+
+    vidcap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+    vidcap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+
     if vidcap.isOpened:
         print("Camera open")
         ret, frame = vidcap.read()
@@ -615,8 +619,15 @@ def performImageProcessing(image):
 boxes, scores, classes = performImageProcessing()
 """
 
-image = fetchPicture()
 
+input("Set up cards")
+while True:
+    image = fetchPicture()
+    boxes, scores, classes = performImageProcessing(image)
+    print(boxes)
+    print(scores)
+    print(classes)
+    input("Wait for next picture")
 
 """
 input("Set up your cards")
