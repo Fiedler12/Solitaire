@@ -302,9 +302,14 @@ def readColumn(index):
         if x[1] > columnIdx[index][0] and x[3] < columnIdx[index][1]:
             print("Card found")
             table.columns[index-1].cards[-1].revealCard(classes[idx])
+            table.columns[index - 1].cards[-1].getColor()
             print("card is now found to be ", table.columns[index - 1].cards[-1].faction, table.columns[index - 1].cards[-1].value)
             break
         idx = idx + 1
+    if table.columns[index - 1].cards[-1].value == None:
+        input("Unable to read column ", index, " please adjust and press enter")
+        fetchPicture()
+        readColumn(index)
 
 
 
@@ -318,8 +323,12 @@ def readDraw():
             draw[-1].revealCard(classes[idx])
             draw[-1].getColor()
             print("Draw is ", draw[-1].faction, draw[-1].value)
-
         idx = idx + 1
+    if draw[-1].value == None:
+        input("Draw not found. Adjust and press enter")
+        fetchPicture()
+        readDraw()
+
 
 
 def makeMove(suggestion):
