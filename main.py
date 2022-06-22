@@ -80,7 +80,7 @@ num_detections = detection_graph.get_tensor_by_name('num_detections:0')
 """
 columnIdx = []
 
-column1 = [0.03125, 0.1406]
+column1 = [0.0, 0.1406]
 columnIdx.append(column1)
 
 column2 = [0.1406, 0.2656]
@@ -323,6 +323,10 @@ def readDraw():
 
 
 def makeMove(suggestion):
+    if (len(stack) + len(draw) == 3) and len(draw) != 3:
+        print("turn talon final time")
+        drawCards()
+        return
     if suggestion.sugCode == 1:
         print("Intercolumn move")
         for column in table.columns:
@@ -472,9 +476,15 @@ while True:
 
     elif state == 0:
         findMissingCard()
+        if draw[-1].value == None:
+            readDraw()
         printTable()
-        suggestion = gameLogic.getSuggestion(table, draw[-1])
-        makeMove(suggestion)
+        if len(draw) + len(stack) != 0:
+            suggestion = gameLogic.getSuggestion(table, draw[-1])
+            makeMove(suggestion)
+        else:
+            suggestion = gameLogic.getEndSuggestion(table)
+            makeMove(suggestion)
         ## This is a regular round.
 
 

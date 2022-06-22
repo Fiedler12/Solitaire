@@ -37,6 +37,30 @@ class GameLogic:
         self.table = None
         return suggestion
 
+    def getEndSuggestion(self, table):
+        self.table = table
+        suggestion = None
+
+        if (not self.sugFound):
+            suggestion = self.checkForEmptyColumn()
+
+        if (not self.sugFound):
+            suggestion = self.checkForKingColumnMove()
+
+        if (not self.sugFound):
+            suggestion = self.checkForColumnMoves()
+
+        if (not self.sugFound):
+            suggestion = self.checkForFoundation()
+
+        if (not self.sugFound):
+            print("No move found. Pull card. Does not solve")
+
+        self.sugFound = False
+        self.table = None
+        return suggestion
+
+
     def checkForKingColumnMove(self):
         for column in self.table.columns:
             if len(column.cards) != 0:
@@ -96,6 +120,16 @@ class GameLogic:
                         print("Move found")
                         print("move: ", self.draw.value, self.draw.faction, "to empty column.")
                         return Suggestion(3, self.draw, column)
+            for column in self.table.columns:
+                if self.draw.value != 3:
+                    if len(column.cards) != 0:
+                        checkCard = column.cards[-1]
+                        if (self.draw.value + 1 == checkCard.value) and (self.draw.isRed != checkCard.isRed):
+                            self.sugFound = True
+                            print("Move found")
+                            print("move: ", self.draw.value, self.draw.faction, "to: ", checkCard.value,
+                                  checkCard.faction)
+                            return Suggestion(3, self.draw, column)
             for donePile in self.table.donePiles:
                 if donePile.faction == self.draw.faction:
                     if len(donePile.cards) + 1 == self.draw.value:
@@ -103,15 +137,7 @@ class GameLogic:
                         print("Move found")
                         print("Move draw to done pile")
                         return Suggestion(5, self.draw, donePile)
-            for column in self.table.columns:
-                if self.draw.value !=3:
-                    if len(column.cards) != 0:
-                        checkCard = column.cards[-1]
-                        if (self.draw.value + 1 == checkCard.value) and (self.draw.isRed != checkCard.isRed):
-                            self.sugFound = True
-                            print("Move found")
-                            print("move: ", self.draw.value, self.draw.faction, "to: ", checkCard.value, checkCard.faction)
-                            return Suggestion(3, self.draw, column)
+
             return None
 
     def checkForEmptyColumn(self):
